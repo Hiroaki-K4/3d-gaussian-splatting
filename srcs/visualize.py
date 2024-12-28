@@ -63,8 +63,13 @@ def main(
         points=points[point_mask],
         colors=colors[point_mask],
         point_size=gui_point_size.value,
+        point_shape="circle",  # sparkle is funny, try it
     )
     frames: List[viser.FrameHandle] = []
+    draw_initial_3d_gaussians = server.gui.add_checkbox(
+        "Draw initial 3D Gaussians", False
+    )
+    # TODO: Calculate initial covariance of 3D Gaussians
 
     def visualize_frames() -> None:
         """Send all COLMAP elements to viser for visualization. This could be optimized
