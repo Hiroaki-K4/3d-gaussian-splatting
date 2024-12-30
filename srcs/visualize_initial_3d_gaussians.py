@@ -15,6 +15,8 @@ from viser.extras.colmap import (
     read_points3d_binary,
 )
 
+from create_initial_3d_gaussian_distribution import create_initial_covariance
+
 
 def main(
     colmap_path: Path = Path(__file__).parent / "../datasets/garden/sparse/0",
@@ -58,18 +60,7 @@ def main(
     colors = np.array([points3d[p_id].rgb for p_id in points3d])
 
     point_mask = np.random.choice(points.shape[0], gui_points.value, replace=False)
-    # point_cloud = server.scene.add_point_cloud(
-    #     name="/colmap/pcd",
-    #     points=points[point_mask],
-    #     colors=colors[point_mask],
-    #     point_size=gui_point_size.value,
-    #     point_shape="circle",  # sparkle is funny, try it
-    # )
-    print(points)
-    print(points.shape)
-    input()
-
-    point_sizes = np.random.choice([0.1, 0.05, 0.025], size=points.shape[0])
+    point_sizes = create_initial_covariance(points)
     for size in np.unique(point_sizes):
         indices = np.where(point_sizes == size)[0]
         name = f"/points_size_{size}"
@@ -85,7 +76,6 @@ def main(
     draw_initial_3d_gaussians = server.gui.add_checkbox(
         "Draw initial 3D Gaussians", False
     )
-    # TODO: Calculate initial covariance of 3D Gaussians
 
     def visualize_frames() -> None:
         """Send all COLMAP elements to viser for visualization. This could be optimized

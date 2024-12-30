@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import tyro
-from tqdm import tqdm
+from scipy.spatial import cKDTree
 from viser.extras.colmap import (
     read_cameras_binary,
     read_images_binary,
@@ -11,9 +11,13 @@ from viser.extras.colmap import (
 
 
 def create_initial_covariance(points):
-    for i in tqdm(range(points.shape[0])):
-        for j in range(points.shape[0]):
-            continue
+    kdtree = cKDTree(points)
+    k = 4  # 1 self-point + 3 nearest neighbors
+    distances, indices = kdtree.query(points, k=k)
+
+    radius = np.mean(distances[:, 1:], axis=1)
+    radius_rounded = np.round(radius, 3)
+    return radius_rounded
 
 
 def main(
@@ -26,7 +30,7 @@ def main(
     points3d = read_points3d_binary(colmap_path / "points3D.bin")
     points = np.array([points3d[p_id].xyz for p_id in points3d])
     colors = np.array([points3d[p_id].rgb for p_id in points3d])
-    create_initial_covariance(points)
+    radius = create_initial_covariance(points)
 
 
 if __name__ == "__main__":
