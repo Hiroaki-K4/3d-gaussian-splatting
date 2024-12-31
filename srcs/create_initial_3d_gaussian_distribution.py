@@ -16,8 +16,8 @@ def create_initial_covariance(points):
     distances, indices = kdtree.query(points, k=k)
 
     radius = np.mean(distances[:, 1:], axis=1)
-    radius_rounded = np.round(radius, 3)
-    return radius_rounded
+    covariances = [np.diag([r ** 2, r ** 2, r ** 2]) for r in radius]
+    return covariances, radius
 
 
 def main(
@@ -30,7 +30,7 @@ def main(
     points3d = read_points3d_binary(colmap_path / "points3D.bin")
     points = np.array([points3d[p_id].xyz for p_id in points3d])
     colors = np.array([points3d[p_id].rgb for p_id in points3d])
-    radius = create_initial_covariance(points)
+    covariances, radius = create_initial_covariance(points)
 
 
 if __name__ == "__main__":

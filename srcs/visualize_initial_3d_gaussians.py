@@ -60,7 +60,8 @@ def main(
     colors = np.array([points3d[p_id].rgb for p_id in points3d])
 
     point_mask = np.random.choice(points.shape[0], gui_points.value, replace=False)
-    point_sizes = create_initial_covariance(points)
+    covariances, radius = create_initial_covariance(points)
+    point_sizes = np.round(radius, 3)
     for size in np.unique(point_sizes):
         indices = np.where(point_sizes == size)[0]
         name = f"/points_size_{size}"
