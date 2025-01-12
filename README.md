@@ -69,7 +69,42 @@ Since the visualization above visualizes position and radius, opacities are irre
 
 <br></br>
 
+# EWA Volume Splatting
+
+<img src="resources/ewa.png" width='600'>
+
+### Object Space
+The coordinate system where the object's geometry is defined. It is local to the object and independent of the world or camera.
+For example, A cube might have its vertices defined in object space as
+$(−1,−1,−1)$ to $(1,1,1)$ around its local origin. Objects in object space are transformed into **world space** using a **model matrix**.
+
+### Camera Space
+The coordinate system relative to the camera (or viewer). After transforming from world space,
+objects are expressed in this space to determine their visibility and how they will be projected onto the screen.
+Obtained by applying the **view matrix**, which represents the camera's position and orientation in world space.
+
+### Ray Space
+A space used to represent rays, typically defined by a ray's origin and direction.
+It is not a formal coordinate system but a conceptual framework for ray-tracing operations.
+Rays are transformed between spaces (e.g., from world space to object space) using inverse transformations.
+
+$$
+R(t)=O+t⋅D
+$$
+
+- $O$: Origin of the ray.
+- $D$: Direction of the ray (normalized).
+- $t$: Parameter controlling the position along the ray.
+
+### Screen Space
+The 2D coordinate system corresponding to the pixels of the display or image being rendered.
+This is the final stage of the rendering pipeline.
+Objects are projected from camera space into screen space using the **projection matrix** and subsequent viewport scaling.
+
+<br></br>
+
 # References
 
 - [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/)
 - [Viser](https://github.com/nerfstudio-project/viser)
+- [EWA Volume Splatting](https://www.cs.umd.edu/~zwicker/publications/EWAVolumeSplatting-VIS01.pdf)
